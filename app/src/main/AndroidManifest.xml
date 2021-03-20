@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.firebaseconcept">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".FirebaseUI.AddNote"
+            android:parentActivityName=".FirebaseUI.FirebaseUiActivity"></activity>
+        <activity
+            android:name=".FirebaseUI.FirebaseUiActivity"
+            android:launchMode="singleTop" />
+        <activity android:name=".FireStore.FirestoreArrays" />
+        <activity android:name=".FireStore.FireStorePagination" />
+        <activity android:name=".FireStore.SecondFirestore" />
+        <activity android:name=".FireStore.FireStoreActivity" />
+        <activity android:name=".FirebaseStorage.ShowUploads" />
+        <activity android:name=".FirebaseStorage.FirebaseStorage" />
+        <activity android:name=".RealTimeDatabase.RealTimeDatabaseActivity" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
