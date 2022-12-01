@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             button.setVisibility(View.GONE);
 
         } else {
-            linearLayout.setVisibility(View.GONE);
+            linearLayout.setVisibility(View.VISIBLE);
             button.setVisibility(View.VISIBLE);
 
         }
