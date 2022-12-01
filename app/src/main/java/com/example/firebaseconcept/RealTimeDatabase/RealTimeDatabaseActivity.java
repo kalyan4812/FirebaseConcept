@@ -60,9 +60,9 @@ public class RealTimeDatabaseActivity extends AppCompatActivity {
                 if (snapshot != null) {
                     User user = (User) snapshot.getValue(User.class);
                     System.out.println("child added " + user.getName());
-                 //   if(previousChildName==null){
-                        lastFetchedTitle = user.getName_key();
-                   // }
+                    //   if(previousChildName==null){
+                    lastFetchedTitle = user.getName_key();
+                    // }
                 }
             }
 
@@ -97,9 +97,9 @@ public class RealTimeDatabaseActivity extends AppCompatActivity {
         String uemail = email.getText().toString();
         for (int i = 0; i < 100; i++) {
             //    if(uemail!=null && uname!=null) {
-            String key=FirebaseDatabase.getInstance().getReference("Users").push().getKey();
-            String name= RandomStringUtils.randomAlphabetic(5,15);
-            User user = new User(name, uemail,name+"_"+key);
+            String key = FirebaseDatabase.getInstance().getReference("Users").push().getKey();
+            String name = RandomStringUtils.randomAlphabetic(5, 15);
+            User user = new User(name, uemail, name + "_" + key);
             FirebaseDatabase.getInstance().getReference("Users").child(key)
                     .setValue(user);
             //   }
