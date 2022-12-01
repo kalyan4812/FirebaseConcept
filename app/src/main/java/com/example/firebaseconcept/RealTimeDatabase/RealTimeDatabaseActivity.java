@@ -19,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import java.util.Random;
 
 public class RealTimeDatabaseActivity extends AppCompatActivity {
@@ -34,7 +36,7 @@ public class RealTimeDatabaseActivity extends AppCompatActivity {
         name = findViewById(R.id.name);
         email = findViewById(R.id.email);
         databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-        serachUsersByInput("b");
+        serachUsersByInput("ZO");
     }
 
 
@@ -44,11 +46,11 @@ public class RealTimeDatabaseActivity extends AppCompatActivity {
         if (lastFetchedTitle != null) {
             query = databaseReference.orderByChild("name_key")
                     .startAt(lastFetchedTitle).endAt(text + "\uf8ff")
-                    .limitToFirst(5);
+                    .limitToFirst(100);
         } else {
             query = databaseReference.orderByChild("name_key").startAt(text)
                     .endAt(text + "\uf8ff")
-                    .limitToFirst(5);
+                    .limitToFirst(200);
         }
         query.addChildEventListener(new ChildEventListener() {
             @Override
@@ -96,7 +98,7 @@ public class RealTimeDatabaseActivity extends AppCompatActivity {
         for (int i = 0; i < 100; i++) {
             //    if(uemail!=null && uname!=null) {
             String key=FirebaseDatabase.getInstance().getReference("Users").push().getKey();
-            String name="c" + i+" "+(i+1);
+            String name= RandomStringUtils.randomAlphabetic(5,15);
             User user = new User(name, uemail,name+"_"+key);
             FirebaseDatabase.getInstance().getReference("Users").child(key)
                     .setValue(user);
@@ -164,6 +166,6 @@ public class RealTimeDatabaseActivity extends AppCompatActivity {
     }
 
     public void searchQuery(View view) {
-        serachUsersByInput("b");
+        serachUsersByInput("ZO");
     }
 }
