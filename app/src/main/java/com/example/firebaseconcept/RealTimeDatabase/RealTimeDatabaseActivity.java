@@ -5,6 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -24,7 +28,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.util.Random;
 
 public class RealTimeDatabaseActivity extends AppCompatActivity {
-    EditText name, email;
+    EditText name, email, search_by_name;
 
     private DatabaseReference databaseReference;
     private Query query;
@@ -35,35 +39,86 @@ public class RealTimeDatabaseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_real_time_database);
         name = findViewById(R.id.name);
         email = findViewById(R.id.email);
+        search_by_name = findViewById(R.id.search_name);
         databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-        serachUsersByInput("ZO");
+        search_by_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String key = editable.toString();
+                if (!TextUtils.isEmpty(key) && acceptText && key.length() >= 2) {
+                    if (textTobeSearched != null && textTobeSearched.equalsIgnoreCase(key)) {
+                        serachUsersByInput(key, false);
+                    } else {
+                        itemsFound = true;
+                        lastFetchedTitle = null;
+                        textTobeSearched = null;
+                        serachUsersByInput(key, true);
+                    }
+                    acceptText = false;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            acceptText = true;
+                        }
+                    }, 3000L);
+                }
+            }
+        });
     }
 
 
+    private boolean acceptText = true;
     private String lastFetchedTitle = null;
+    private boolean itemsFound = true;
+    private String textTobeSearched = null;
 
-    private void serachUsersByInput(String text) {
-        if (lastFetchedTitle != null) {
-            query = databaseReference.orderByChild("name_key")
+    private void serachUsersByInput(String text, boolean newQuery) {
+        textTobeSearched = text;
+        if (!itemsFound) {
+            Toast.makeText(getApplicationContext(), "Data Not Found", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (lastFetchedTitle != null && !newQuery) {
+            query = databaseReference.orderByChild("name")
                     .startAt(lastFetchedTitle).endAt(text + "\uf8ff")
                     .limitToFirst(100);
+            itemsFound = false;
         } else {
-            query = databaseReference.orderByChild("name_key").startAt(text)
+            query = databaseReference.orderByChild("name").startAt(text)
                     .endAt(text + "\uf8ff")
                     .limitToFirst(200);
+            itemsFound = false;
+            newQuery = false;
         }
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
+                if (previousChildName == null && lastFetchedTitle != null) {
+                    itemsFound = false;
+                    return;
+                }
 
                 if (snapshot != null) {
                     User user = (User) snapshot.getValue(User.class);
                     System.out.println("child added " + user.getName());
                     //   if(previousChildName==null){
-                    lastFetchedTitle = user.getName_key();
+                    itemsFound = true;
+                    lastFetchedTitle = user.getName();
                     // }
                 }
+
             }
 
             @Override
@@ -95,7 +150,7 @@ public class RealTimeDatabaseActivity extends AppCompatActivity {
 
         String uname = name.getText().toString();
         String uemail = email.getText().toString();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 20000; i++) {
             //    if(uemail!=null && uname!=null) {
             String key = FirebaseDatabase.getInstance().getReference("Users").push().getKey();
             String name = RandomStringUtils.randomAlphabetic(5, 15);
@@ -166,6 +221,7 @@ public class RealTimeDatabaseActivity extends AppCompatActivity {
     }
 
     public void searchQuery(View view) {
-        serachUsersByInput("ZO");
+        if (textTobeSearched != null)
+            serachUsersByInput(textTobeSearched, false);
     }
 }
