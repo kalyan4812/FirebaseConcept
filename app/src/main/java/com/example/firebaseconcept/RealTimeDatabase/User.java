@@ -14,6 +14,9 @@ public class User {
 
     private String name_key;
 
+    private boolean dummy; // you can have a key here,which is not present in firebase for user node,but it always gives default value if
+    // try to access..
+
     public User() {
 
     }
@@ -38,5 +41,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isDummy() {
+        return dummy;
+    }
+
+    public void setDummy(boolean dummy) {
+        this.dummy = dummy;
     }
 }
